@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-#! /usr/bin/env bash
-
 fix_pane_navigation_bindings() {
     tmux unbind-key C-h
     tmux unbind-key C-j
@@ -25,10 +23,17 @@ fix_window_splitting() {
     tmux unbind-key '%'
 }
 
+set_window_renaming(){
+    tmux set-option -g status-interval 1
+    tmux set-option -g automatic-rename on
+    tmux set-option -g automatic-rename-format '#{b:pane_current_path}'
+}
+
 main() {
     fix_pane_navigation_bindings
     fix_window_nav
     fix_window_splitting
+    set_window_renaming
 }
 
 main
