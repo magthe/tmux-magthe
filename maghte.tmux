@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SCRIPTS_DIR="${CURRENT_DIR}/scripts"
+
 fix_pane_navigation_bindings() {
     tmux unbind-key C-h
     tmux unbind-key C-j
@@ -23,10 +26,17 @@ fix_window_splitting() {
     tmux unbind-key '%'
 }
 
-set_window_renaming(){
+set_window_renaming() {
     tmux set-option -g status-interval 1
     tmux set-option -g automatic-rename on
     tmux set-option -g automatic-rename-format '#{b:pane_current_path}'
+}
+
+set_my_copying() {
+    tmux unbind-key '['
+    tmux unbind-key ']'
+
+    tmux bind-key '[' run-shell "${SCRIPTS_DIR}/edit-tmux-output"
 }
 
 main() {
@@ -34,6 +44,7 @@ main() {
     fix_window_nav
     fix_window_splitting
     set_window_renaming
+    set_my_copying
 }
 
 main
