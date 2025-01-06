@@ -3,14 +3,14 @@
 CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="${CURRENT_DIR}/scripts"
 
-    tmux bind-key -r h select-pane -L
-    tmux bind-key -r j select-pane -D
-    tmux bind-key -r k select-pane -U
-    tmux bind-key -r l select-pane -R
 fix_pane_nav() {
     for k in C-h C-j C-k C-l Up Down Left Right; do
         tmux unbind-key ${k}
     done
+    tmux bind-key -r -N 'Select the pane to the left' h select-pane -L
+    tmux bind-key -r -N 'Select the pane below' j select-pane -D
+    tmux bind-key -r -N 'Select the pane above' k select-pane -U
+    tmux bind-key -r -N 'Select the pane to the right' l select-pane -R
 }
 
 fix_pane_resizing() {
@@ -20,11 +20,11 @@ fix_pane_resizing() {
 }
 
 fix_window_nav() {
-    tmux bind-key -r n next-window
-    tmux bind-key -r p previous-window
     for i in $(seq 0 9) C-n C-p M-n M-p; do
         tmux unbind-key ${i}
     done
+    tmux bind-key -r -N 'Select next window' n next-window
+    tmux bind-key -r -N 'Select previous window' p previous-window
 }
 
 fix_window_splitting() {
@@ -45,6 +45,13 @@ set_my_copying() {
     tmux bind-key '[' run-shell "${SCRIPTS_DIR}/edit-tmux-output"
 }
 
+add_notes() {
+    # https://github.com/tmux-plugins/tpm/pull/187 -- I'm using the default bindings
+    tmux bind-key -N 'TPM: Install plugins' I
+    tmux bind-key -N 'TPM: Update plugins' U
+    tmux bind-key -N 'TPM: Prune plugins' M-u
+}
+
 main() {
     fix_pane_nav
     fix_pane_resizing
@@ -52,6 +59,7 @@ main() {
     fix_window_splitting
     set_window_renaming
     set_my_copying
+    add_notes
 }
 
 main
