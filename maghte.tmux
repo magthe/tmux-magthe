@@ -3,22 +3,28 @@
 CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SCRIPTS_DIR="${CURRENT_DIR}/scripts"
 
-fix_pane_navigation_bindings() {
-    tmux unbind-key C-h
-    tmux unbind-key C-j
-    tmux unbind-key C-k
-    tmux unbind-key C-l
     tmux bind-key -r h select-pane -L
     tmux bind-key -r j select-pane -D
     tmux bind-key -r k select-pane -U
     tmux bind-key -r l select-pane -R
+fix_pane_nav() {
+    for k in C-h C-j C-k C-l Up Down Left Right; do
+        tmux unbind-key ${k}
+    done
+}
+
+fix_pane_resizing() {
+    for k in C-Up C-Down C-Left C-Right; do
+        tmux unbind-key ${k}
+    done
 }
 
 fix_window_nav() {
-    tmux unbind-key C-n
-    tmux unbind-key C-p
     tmux bind-key -r n next-window
     tmux bind-key -r p previous-window
+    for i in $(seq 0 9) C-n C-p M-n M-p; do
+        tmux unbind-key ${i}
+    done
 }
 
 fix_window_splitting() {
@@ -40,7 +46,8 @@ set_my_copying() {
 }
 
 main() {
-    fix_pane_navigation_bindings
+    fix_pane_nav
+    fix_pane_resizing
     fix_window_nav
     fix_window_splitting
     set_window_renaming
